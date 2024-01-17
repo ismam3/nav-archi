@@ -55,93 +55,103 @@ bs.addEventListener("change",()=>{
 
 submit.addEventListener('click', () => {
   document.getElementById("workspace").style.display = 'flex'
-  let lbp = 139.5
-  let b = 14
-  let depth = 6
-  primaryDimensions = [lbp, 14, 6]
+  let lbp = parseFloat(document.getElementById("lbp").value)
+  let b = parseFloat(document.getElementById("b").value)
+  let depth = parseFloat(document.getElementById("d").value)
+  primaryDimensions = [lbp, b, depth]
+  if(input.files.length == 0){
+    // throw "Doesn't provide offset table"
+    alert("Please provide an offset table")
+    location.reload()
+
+  }
   reader.readAsText(input.files[0])
-  
-  
-  reader.onload=(event)=>{
-    console.log("Offset loaded")
-    document.getElementById("init_gui_container").style.display="none";
-    // document.getElementById("linesplan").style.display="block";
-    var csvdata = event.target.result
-    var rowData = csvdata.split("\r\n")
-    var wpRow = rowData[0].split(",")
-    wpRow.shift()
-    waterplaneIndex.push(wpRow)
-    const wl_spacing = depth/waterplaneIndex[0][waterplaneIndex[0].length-1]
-    for(var r = 1;r<rowData.length;r++){
-      var coldata = rowData[r].split(",")
-      stationIndex.push(coldata[0])
-      coldata.shift()
-      offsetData.push(coldata) 
-    }
-    for(var s=0;s<stationIndex.length;s++){
-      stationLengths.push(lbp - (parseInt(stationIndex[s])*(lbp/20)))
-    }
-    for(var p = 0;p<offsetData.length;p++){
-      for(var o = 0;o<offsetData[p].length;o++){
-        var xd = lbp - stationIndex[p]*(lbp/20);
-        var yd = parseFloat(offsetData[p][o])*b/2;
-        var zd = parseFloat(waterplaneIndex[0][o])*wl_spacing;
-        if(p==0){
-          waterplaneHeights.push(zd)
-        }
-        if(p==offsetData.length-2){
-          stern.push({x:xd,y:yd,z:zd})
-        }
-        if(p==1){
-          bow.push({x:xd,y:yd,z:zd})
-          neg_bow.push({x:xd,y:yd*-1,z:zd})
-        }
-        if(xd!=NaN||yd!=NaN||zd!=NaN){
-          if(zd==0){
-            if(p>0&&p<=offsetData.length-2){
-              keelpoints.push({x:xd,y:yd,z:zd})
-            }
+  if (isNaN(lbp) || isNaN(b) || isNaN(depth)) {
+    alert("Please Give LBP, breadth and depth propoerly")
+    location.reload()
+  } else {
+    reader.onload=(event)=>{
+      console.log("Offset loaded")
+      document.getElementById("init_gui_container").style.display="none";
+      // document.getElementById("linesplan").style.display="block";
+      var csvdata = event.target.result
+      var rowData = csvdata.split("\r\n")
+      var wpRow = rowData[0].split(",")
+      wpRow.shift()
+      waterplaneIndex.push(wpRow)
+      const wl_spacing = depth/waterplaneIndex[0][waterplaneIndex[0].length-1]
+      for(var r = 1;r<rowData.length;r++){
+        var coldata = rowData[r].split(",")
+        stationIndex.push(coldata[0])
+        coldata.shift()
+        offsetData.push(coldata) 
+      }
+      for(var s=0;s<stationIndex.length;s++){
+        stationLengths.push(lbp - (parseInt(stationIndex[s])*(lbp/20)))
+      }
+      for(var p = 0;p<offsetData.length;p++){
+        for(var o = 0;o<offsetData[p].length;o++){
+          var xd = lbp - stationIndex[p]*(lbp/20);
+          var yd = parseFloat(offsetData[p][o])*b/2;
+          var zd = parseFloat(waterplaneIndex[0][o])*wl_spacing;
+          if(p==0){
+            waterplaneHeights.push(zd)
           }
-          if(bs.files.length!=0){
-            if(p<offsetData.length-1&&p>0){
+          if(p==offsetData.length-2){
+            stern.push({x:xd,y:yd,z:zd})
+          }
+          if(p==1){
+            bow.push({x:xd,y:yd,z:zd})
+            neg_bow.push({x:xd,y:yd*-1,z:zd})
+          }
+          if(xd!=NaN||yd!=NaN||zd!=NaN){
+            if(zd==0){
+              if(p>0&&p<=offsetData.length-2){
+                keelpoints.push({x:xd,y:yd,z:zd})
+              }
+            }
+            if(bs.files.length!=0){
+              if(p<offsetData.length-1&&p>0){
+                tdpoints.push({x:xd,y:yd,z:zd})
+              }
+            }
+            else{
               tdpoints.push({x:xd,y:yd,z:zd})
             }
-          }
-          else{
-            tdpoints.push({x:xd,y:yd,z:zd})
-          }
-          lnpoints.push({x:xd,y:yd,z:zd})
-        }
-        
-      }
-      for(var o = 0;o<offsetData[p].length;o++){
-        var xd = lbp - stationIndex[p]*(lbp/20);
-        var yd = parseFloat(offsetData[p][o])*-1*b/2;
-        var zd = parseFloat(waterplaneIndex[0][o])*wl_spacing;
-        if(xd!=NaN||yd!=NaN||zd!=NaN){
-          if(zd==0){
-            if(p>0&&p<=offsetData.length-2){
-              keelpoints.push({x:xd,y:yd,z:zd})
-            }
-          }
-          if(bs.files.length!=0){
-            if(p<offsetData.length-1&&p>0){
-              negtdpoints.push({x:xd,y:yd,z:zd})
-            }
-          }
-          else{
-            negtdpoints.push({x:xd,y:yd,z:zd})
+            lnpoints.push({x:xd,y:yd,z:zd})
           }
           
         }
-        if(p==offsetData.length-2){
-          neg_stern.push({x:xd,y:yd,z:zd})
+        for(var o = 0;o<offsetData[p].length;o++){
+          var xd = lbp - stationIndex[p]*(lbp/20);
+          var yd = parseFloat(offsetData[p][o])*-1*b/2;
+          var zd = parseFloat(waterplaneIndex[0][o])*wl_spacing;
+          if(xd!=NaN||yd!=NaN||zd!=NaN){
+            if(zd==0){
+              if(p>0&&p<=offsetData.length-2){
+                keelpoints.push({x:xd,y:yd,z:zd})
+              }
+            }
+            if(bs.files.length!=0){
+              if(p<offsetData.length-1&&p>0){
+                negtdpoints.push({x:xd,y:yd,z:zd})
+              }
+            }
+            else{
+              negtdpoints.push({x:xd,y:yd,z:zd})
+            }
+            
+          }
+          if(p==offsetData.length-2){
+            neg_stern.push({x:xd,y:yd,z:zd})
+          }
+          
         }
-        
       }
-    }
-    rend(tdpoints,negtdpoints,keelpoints, stern, neg_stern, bow, neg_bow)
-  } 
+      rend(tdpoints,negtdpoints,keelpoints, stern, neg_stern, bow, neg_bow)
+    } 
+  }
+   
 })
 
 
@@ -163,9 +173,13 @@ function rend(point,negpoint,keelpoints, stern, neg_stern, bow, neg_bow){
   var controls = new OrbitControls(camera, canvas);
 
   var light = new THREE.DirectionalLight(0xffffff, 1.5);
-  light.position.setScalar(100);
+  light.position.set(0,0,-30);
   scene.add(light);
+  var light1 = new THREE.DirectionalLight(0xffffff, 1);
+  light1.position.set(30,10,0);
+  scene.add(light1);
   scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  
 
   var geom = new THREE.BufferGeometry().setFromPoints(point);
   var neg_geom = new THREE.BufferGeometry().setFromPoints(negpoint);
@@ -270,19 +284,19 @@ function rend(point,negpoint,keelpoints, stern, neg_stern, bow, neg_bow){
     neg_bow_geom.computeVertexNormals();
     var stern_mesh = new THREE.Mesh(
       stern_geom, // re-use the existing geometry
-      new THREE.MeshLambertMaterial({ color: "red", wireframe: false, side:THREE.DoubleSide })
+      new THREE.MeshLambertMaterial({ color: "blue", wireframe: false, side:THREE.DoubleSide })
     );
     var neg_stern_mesh = new THREE.Mesh(
       neg_stern_geom, // re-use the existing geometry
-      new THREE.MeshLambertMaterial({ color: "red", wireframe: false, side:THREE.DoubleSide })
+      new THREE.MeshLambertMaterial({ color: "blue", wireframe: false, side:THREE.DoubleSide })
     );
     var bow_mesh = new THREE.Mesh(
       bow_geom, // re-use the existing geometry
-      new THREE.MeshLambertMaterial({ color: "red", wireframe: false, side:THREE.DoubleSide })
+      new THREE.MeshLambertMaterial({ color: "blue", wireframe: false, side:THREE.DoubleSide })
     );
     var neg_bow_mesh = new THREE.Mesh(
       neg_bow_geom, // re-use the existing geometry
-      new THREE.MeshLambertMaterial({ color: "red", wireframe: false, side:THREE.DoubleSide })
+      new THREE.MeshLambertMaterial({ color: "blue", wireframe: false, side:THREE.DoubleSide })
     );
     stern_mesh.rotation.set(-Math.PI/2,0,0);
     neg_stern_mesh.rotation.set(-Math.PI/2,0,0);
