@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ship builder</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.3/dist/es-module-shims.js" crossorigin="anonymous"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.152.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.152.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+    <!-- https://github.com/mapbox/delaunator -->
+    <script src="https://unpkg.com/delaunator@3.0.2/delaunator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+
+    <script type="module" src="script.js"></script>
+
+
+    <script src="https://josephg.github.io/noisejs/perlin.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.3/dat.gui.min.js"></script>
+
+    
+
+    <div id="init_gui_container">
+      <p>3D Hull Constructor <br>&nbsp; from Offset Table</p>
+      <div id="init_gui">
+        <input type="text" class="btn" id="lbp" placeholder="Enter the LBP here">
+        <input type="text" class="btn" id="b" placeholder="Enter the breadth here">
+        <input type="text" class="btn" id="d" placeholder="Enter the depth here">
+        <div class="upload-btn-wrapper">
+          <button class="btn" id="shower_btn">Upload a CSV</button>
+          <input type="file" id="input">
+        </div>
+        <div class="upload-btn-wrapper">
+          <button class="btn" id="shower_btn_bs">Upload a CSV for Bow and Stern</button>
+          <input type="file" id="bs">
+        </div>
+        <button class="btn" type="submit" id="submit">Visualize</button>
+      </div>
+    </div>
+    <div id="linesplan">
+      <button>Get Linesplan</button>
+    </div>
+    <div id="workspace">
+      <canvas id="threed"></canvas>
+      <div id="lpv">
+        <!-- <canvas id="profile"></canvas> -->
+        <div>
+          <canvas id="half-breadth"></canvas>
+        </div>
+        <div>
+          <canvas id="bodyplan"></canvas>
+        </div>
+        <div>
+          <canvas id="profile"></canvas>
+        </div>
+      </div>
+      
+    </div>
+  </body>
+</html>
+
+
+
+
