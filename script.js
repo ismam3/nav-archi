@@ -25,8 +25,6 @@ var reader = new FileReader();
 const input = document.getElementById('input')
 const bs = document.getElementById('bs')
 const submit = document.getElementById("submit")
-const linesplan = document.getElementById("linesplan")
-linesplan.addEventListener("click",linesplan_gn)
 
 //changing placeholder after uploading file
 input.addEventListener("change",()=>{

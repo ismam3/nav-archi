@@ -84,13 +84,20 @@ html, body {
   height: 330px;
 }
 #workspace{
-  display: none;
+  display: flex;
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-#workspace #threed{
+#workspace canvas{
+  height: 48%;
+  width: 49%;
+  border: black 4px inset;
+}
+/* #workspace #threed{
   height: 100vh;
   width: 70vw;
 }
@@ -100,4 +107,16 @@ html, body {
 }
 #workspace #lpv div canvas{
   width: 30vw;
+} */
+
+@media only screen and (max-width: 1000px) {
+  /* For mobile phones: */
+  #workflow{
+    overflow: scroll;
+    justify-content: center;
+  }
+  #workspace canvas{
+    height: 100%;
+    width: 80%;
+  }
 }
